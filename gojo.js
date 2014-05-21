@@ -2,17 +2,21 @@
 
 var args = process.argv.slice(2);
 
-var fs 			= require('fs'),
-	chalk 		= require('chalk'),
-	readline	= require('readline'),
-	pkg			= require(__dirname + '/package.json'),
-	utils		= require(__dirname + '/utils.json'),
-	_ 			= require('underscore');
+var fs = require('fs');
+var chalk = require('chalk');
+var readline = require('readline');
+var pkg = require(__dirname + '/package.json');
+var utils = require(__dirname + '/utils.json');
+var _ = require('underscore');
 
+// Let's change the name to something fancy
+pkg.name = 'GoJo';
 
 var welcome = chalk.green('\n\n\n' + pkg.name + ' - CLI\n');
-	welcome += chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.version);
-	welcome += '\n\n';
+welcome += chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.version);
+welcome += '\n\n';
+
+
 
 var cli = {
 	pkg: pkg,
