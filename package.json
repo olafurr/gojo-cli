@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "description": "Command line tool",
   "bin": {
-    "com": "./com.js"
+    "gojo": "./com.js"
   },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "git repository": "https://github.com/olafurr/com-cli.git",
   "author": "Ólafur Ragnar Garðarsson",
   "license": "ISC",
   "devDependencies": {},
