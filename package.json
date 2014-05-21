@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Command line tool",
   "bin": {
-    "gojo": "./com.js"
+    "gojo": "./gojo.js"
   },
   "main": "gojo.js",
   "scripts": {
