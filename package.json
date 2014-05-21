@@ -1,0 +1,22 @@
+{
+  "name": "GoJo",
+  "version": "0.0.1",
+  "description": "Command line tool",
+  "bin": {
+    "com": "./com.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ólafur Ragnar Garðarsson",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "underscore": "^1.6.0",
+    "chalk": "^0.4.0",
+    "async": "^0.9.0",
+    "readline2": "^0.1.0",
+    "cli-color": "^0.3.2"
+  }
+}

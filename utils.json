@@ -1,0 +1,84 @@
+{
+	"commands": [
+		"init"
+	],
+	"generators": {
+		"angular": {
+			"npm": [
+				"express",
+				"mongoose",
+				"passport",
+				"async",
+				"underscore"
+			],
+			"npmdev": [
+				"gulp",
+				"gulp-load-plugins",
+				"gulp-uglify",
+				"gulp-jshint",
+				"gulp-less",
+				"gulp-cssmin",
+				"gulp-watch",
+				"gulp-bump",
+				"gulp-imagemin",
+				"gulp-concat",
+				"gulp-rename"
+			],
+			"bower": [
+				"angular",
+				"bootstrap",
+				"angular-bootstrap",
+				"angular-route",
+				"angular-mocks"
+			],
+			"directories": [
+				{	
+					"name": "server",
+					"directories": [
+						"config",
+						"views",
+						"schemas",
+						"controllers"
+					]
+				},
+				{
+					"name": "public",
+					"directories": [
+						{
+							"name": "scripts",
+							"directories": [
+								"controllers",
+								"services",
+								"config",
+								"routes"
+							]
+						},
+						"styles",
+						"images"
+					]
+				}
+			],
+			"packageJson": [
+				"name",
+				"version",
+				"git repository",
+				"license",
+				"entry point",
+				"test command",
+				"keywords",
+				"author"
+			],
+			"bowerJson": [
+				"name",
+				"version",
+				"description",
+				"main file",
+				"keywords",
+				"authors",
+				"license",
+				"homepage",
+				"private"
+			]
+		}
+	}
+}
