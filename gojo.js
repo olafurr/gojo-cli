@@ -50,5 +50,5 @@ if (args.length > 0) {
 	console.log('\n');
 	console.log(cli.prefix + ': ' + chalk.cyan.underline.blue('Commands\n'));
 	console.log(cli.prefix + ': ' + chalk.cyan('Generate Angular webapp'));
-	console.log(cli.prefix + ': com init angular\n');
+	console.log(cli.prefix + ': gojo init angular\n');
 }
