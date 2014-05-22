@@ -1,15 +1,10 @@
-
-
-var fs 				= require('fs'),
-	chalk 			= require('chalk'),
-	readline		= require('readline2'),
-	exec			= require('child_process').exec,
-	spawn			= require('child_process').spawn,
-	async 			= require('async'),
-	_				= require('underscore');
-
-var dependencies = ['bootstrap', 'angular', 'angular-route'];
-var acceptedDependencies;
+var fs = require('fs'),
+	chalk = require('chalk'),
+	readline = require('readline2'),
+	exec = require('child_process').exec,
+	spawn = require('child_process').spawn,
+	async = require('async'),
+	_ = require('underscore');
 
 var readline = readline.createInterface({
 	input: process.stdin,
@@ -35,13 +30,17 @@ module.exports = function (cli, generator) {
 	};
 
 	var stringQuestion = function (question, callback) {
-		question = cli.prefix + chalk.cyan(' - ' + cli.generator) + '  ' + question + ' ';;
+		question = cli.prefix + chalk.cyan(' - ' + cli.generator) + '  ' + question + ' ';
 		readline.question(question, function (answer) {
 			callback(answer);
 		});
-	}
+	};
 
-	var info = function(message) {
+	var installDependency = function (dependency, packageMangaer, dev) {
+
+	};
+
+	var info = function (message) {
 		console.log(cli.prefix + chalk.cyan(' - ') + chalk.cyan(generator) + '  ' + chalk.yellow(message) + ' ');
 	};
 
@@ -54,7 +53,7 @@ module.exports = function (cli, generator) {
 	};
 
 	var walkDir = function (dir, path) {
-		if (!dir){
+		if (!dir) {
 			return;
 		}
 		_.each(dir, function (val, key) {
@@ -70,19 +69,25 @@ module.exports = function (cli, generator) {
 		});
 	};
 
-	console.log(chalk.cyan(generator) + ' generator !');
+	success(generator + ' generator !\n');
+
 	var didNpm = false;
 	var didBower = false;
+
 	async.series(
-		[	function (done) {
+		[
+
+			function (done) {
 				info('Generating package.json...');
 				var packageJsonContents = {};
 				var index = 0;
 				async.whilst(
-					function () { return cli.utils.generators[generator].packageJson.length > index },
+					function () {
+						return cli.utils.generators[generator].packageJson.length > index;
+					},
 					function (finishedQ) {
 						var q = cli.utils.generators[generator].packageJson[index];
-						stringQuestion(q + ':' , function (answer) {
+						stringQuestion(q + ':', function (answer) {
 							if (answer === '') {
 								packageJsonContents[q] = '';
 							} else {
@@ -99,7 +104,7 @@ module.exports = function (cli, generator) {
 							if (okay) {
 								didNpm = true;
 								fs.writeFile(absolutePath + '/package.json', pkg, function (err) {
-									success('Created package.json.')
+									success('Created package.json.');
 									done();
 								});
 							} else {
@@ -109,17 +114,19 @@ module.exports = function (cli, generator) {
 						});
 
 					}
-				)
+				);
 			},
 			function (done) {
 				info('Generating bower.json...');
 				var bowerJsonContents = {};
 				var index = 0;
 				async.whilst(
-					function () { return cli.utils.generators[generator].bowerJson.length > index },
+					function () {
+						return cli.utils.generators[generator].bowerJson.length > index;
+					},
 					function (finishedQ) {
 						var q = cli.utils.generators[generator].bowerJson[index];
-						stringQuestion(q + ':' , function (answer) {
+						stringQuestion(q + ':', function (answer) {
 							if (answer === '') {
 								bowerJsonContents[q] = '';
 							} else {
@@ -136,7 +143,7 @@ module.exports = function (cli, generator) {
 							if (okay) {
 								didBower = true;
 								fs.writeFile(absolutePath + '/bower.json', pkg, function (err) {
-									success('Created bower.json.')
+									success('Created bower.json.');
 									done();
 								});
 							} else {
@@ -146,7 +153,7 @@ module.exports = function (cli, generator) {
 						});
 
 					}
-				)
+				);
 			},
 			function (done) {
 				info('Setting up directories...\n');
@@ -154,97 +161,95 @@ module.exports = function (cli, generator) {
 				var directories = cli.utils.generators[generator].directories;
 
 				walkDir(directories, '/');
-				success('Finished creating directories.')
+				success('Finished creating directories.');
 				done();
-			}, 
+			},
 			function (done) {
 				info('Installing dependencies...\n');
-				if (didNpm) {
-					var npmDev = cli.utils.generators[generator].npmdev;
-					var npm = cli.utils.generators[generator].npm;
-					var index = 0;
+				async.series(
+					[
 
-					async.whilst( 
-						function () { return npmDev.length > index },
-						function (npmDevDone) {
-							var dep = npmDev[index];
-							info('Installing dependency: ' + dep);
-							exec('cd ' + absolutePath, function (err) {
-								npmInstall = spawn('npm', ['install', dep, '--save-dev']);
+						function (cb) {
+							if (didNpm) {
+								var npmDev = cli.utils.generators[generator].npmdev;
+								var npm = cli.utils.generators[generator].npm;
+								var index = 0;
 
-								npmInstall.stdout.on('data', function (data) {
-									console.log(data.toString());
-								});
-
-								npmInstall.on('close', function (code) {
-									index++;
-									npmDevDone();
-								});
-							});
-
-						},
-						function (err) {
-							index = 0;
-							async.whilst( 
-								function () { return npm.length > index },
-								function (npmDone) {
-									var dep = npm[index];
-									info('Installing dependency: ' + dep);
-									exec('cd ' + absolutePath, function (err) {
-										var npmInstall = spawn('npm', ['install', dep, '--save']);
-
-										npmInstall.stdout.on('data', function (data) {
-											console.log(data.toString());
-										});
-
-										npmInstall.on('close', function (code) {
+								async.whilst(
+									function () {
+										return npmDev.length > index;
+									},
+									function (npmDevDone) {
+										var dep = npmDev[index];
+										info('Installing dependency: ' + dep);
+										exec('cd ' + absolutePath + ' && npm install ' + dep + ' --save-dev', function (err, data) {
+											console.log(data);
 											index++;
-											npmDone();
+											npmDevDone();
 										});
-									});
-								},
-								function (err) {
-									done();
-								}
-							)	
-						}
-					)
 
-				}
-				if (didBower) {
-					var index = 0;
-					var bower = cli.utils.generators[generator].bower;
-					async.whilst(
-						function () { return bower.length > 0 },
-						function (bowerDone) {
-							var dep = bower[index];
-							info('Installing dependency: ' + dep);
-							exec('cd ' + absolutePath + ' public', function (err) {
-								var bowerInstall = spawn('bower', ['install', dep, '--save']);
-								bowerInstall.stdout.on('data', function (data) {
-									console.log(data.toString());
-								});
+									},
+									function (err) {
+										index = 0;
+										async.whilst(
+											function () {
+												return npm.length > index;
+											},
+											function (npmDone) {
+												var dep = npm[index];
+												info('Installing dependency: ' + dep);
+												exec('cd ' + absolutePath + ' && npm install ' + dep + ' --save', function (err, data) {
+													console.log(data);
+													index++;
+													npmDone();
+												});
+											},
+											function (err) {
+												cb();
+											}
+										);
+									}
+								);
 
-								bowerInstall.on('close', function (code) {
-									index++;
-									bowerDone();
-								});
-							});
+							} else {
+								cb();
+							}
 						},
-						function (err) {
-							done();
+						function (cb) {
+							if (didBower) {
+								var index = 0;
+								var bower = cli.utils.generators[generator].bower;
+								async.whilst(
+									function () {
+										return bower.length > index;
+									},
+									function (bowerDone) {
+										var dep = bower[index];
+										info('Installing dependency: ' + dep);
+										exec('cd ' + absolutePath + ' /public && npm install ' + dep + ' --save', function (err, data) {
+											console.log(data);
+											index++;
+											bowerDone();
+										});
+									},
+									function (err) {
+										cb();
+									}
+								);
+							} else {
+								cb();
+							}
 						}
-					)
-				}
-				if (!didBower && !didNpm) {
-					done();	
-				}
+					], function (err, results) {
+						done();
+					}
+				);
 			}
 		], function (err, results) {
 			success('Successfully created an angular project, good luck !');
 			readline.close();
 		}
-	)
+	);
 
 
 	// async.series(

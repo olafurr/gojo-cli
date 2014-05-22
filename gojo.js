@@ -17,7 +17,6 @@ welcome += chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.vers
 welcome += '\n\n';
 
 
-
 var cli = {
 	pkg: pkg,
 	utils: utils,

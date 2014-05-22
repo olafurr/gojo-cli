@@ -31,33 +31,30 @@
 				"angular-route",
 				"angular-mocks"
 			],
-			"directories": [
-				{	
-					"name": "server",
-					"directories": [
-						"config",
-						"views",
-						"schemas",
-						"controllers"
-					]
-				},
-				{
-					"name": "public",
-					"directories": [
-						{
-							"name": "scripts",
-							"directories": [
-								"controllers",
-								"services",
-								"config",
-								"routes"
-							]
-						},
-						"styles",
-						"images"
-					]
-				}
-			],
+			"directories": [{
+				"name": "server",
+				"directories": [
+					"config",
+					"views",
+					"schemas",
+					"controllers"
+				]
+			}, {
+				"name": "public",
+				"directories": [{
+						"name": "scripts",
+						"directories": [
+							"controllers",
+							"services",
+							"config",
+							"routes",
+							"directives"
+						]
+					},
+					"styles",
+					"images"
+				]
+			}],
 			"packageJson": [
 				"name",
 				"version",
