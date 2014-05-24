@@ -226,7 +226,7 @@ module.exports = function (cli, generator) {
 									function (bowerDone) {
 										var dep = bower[index];
 										info('Installing dependency: ' + dep);
-										exec('cd ' + absolutePath + ' /public && npm install ' + dep + ' --save', function (err, data) {
+										exec('cd ' + absolutePath + ' /public && bower install ' + dep + ' --save', function (err, data) {
 											console.log(data);
 											index++;
 											bowerDone();
