@@ -222,7 +222,6 @@ module.exports = function (cli, generator) {
 
 								fs.writeFileSync(absolutePath + '/.bowerrc', JSON.stringify(bowerrc, null, '\t'));
 
-
 								var index = 0;
 								var bower = cli.utils.generators[generator].bower;
 								async.whilst(
@@ -232,7 +231,9 @@ module.exports = function (cli, generator) {
 									function (bowerDone) {
 										var dep = bower[index];
 										info('Installing dependency: ' + dep);
+
 										exec('cd ' + absolutePath + ' && bower install ' + dep + ' --save', function (err, data) {
+
 											console.log(data);
 											index++;
 											bowerDone();
