@@ -36,9 +36,7 @@ module.exports = function (cli, generator) {
 		});
 	};
 
-	var installDependency = function (dependency, packageMangaer, dev) {
 
-	};
 
 	var info = function (message) {
 		console.log(cli.prefix + chalk.cyan(' - ') + chalk.cyan(generator) + '  ' + chalk.yellow(message) + ' ');
@@ -217,6 +215,14 @@ module.exports = function (cli, generator) {
 						},
 						function (cb) {
 							if (didBower) {
+
+								var bowerrc = {
+									directory: 'public/bower_components'
+								};
+
+								fs.writeFileSync(absolutePath + '/.bowerrc', JSON.stringify(bowerrc, null, '\t'));
+
+
 								var index = 0;
 								var bower = cli.utils.generators[generator].bower;
 								async.whilst(
@@ -226,7 +232,7 @@ module.exports = function (cli, generator) {
 									function (bowerDone) {
 										var dep = bower[index];
 										info('Installing dependency: ' + dep);
-										exec('cd ' + absolutePath + ' /public && npm install ' + dep + ' --save', function (err, data) {
+										exec('cd ' + absolutePath + ' && bower install ' + dep + ' --save', function (err, data) {
 											console.log(data);
 											index++;
 											bowerDone();
