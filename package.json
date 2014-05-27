@@ -1,6 +1,6 @@
 {
   "name": "gojo",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "description": "Command line tool",
   "bin": {
     "gojo": "./gojo.js"

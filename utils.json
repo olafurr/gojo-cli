@@ -9,7 +9,8 @@
 				"mongoose",
 				"passport",
 				"async",
-				"underscore"
+				"underscore",
+				"jade"
 			],
 			"npmdev": [
 				"gulp",
@@ -22,7 +23,10 @@
 				"gulp-bump",
 				"gulp-imagemin",
 				"gulp-concat",
-				"gulp-rename"
+				"gulp-rename",
+				"gulp-flatten",
+				"gulp-compress",
+				"gulp-clean"
 			],
 			"bower": [
 				"angular",
