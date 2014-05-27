@@ -240,7 +240,6 @@ module.exports = function (cli, projectName) {
 										var dep = bower[index];
 										cli.info('Installing dependency: ' + dep);
 										installDependency(dep, 'bower', false, function () {
-											info('Installing dependency: ' + dep);
 											index++;
 											bowerDone();
 										});
