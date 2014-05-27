@@ -21,7 +21,7 @@ module.exports = function (cli, projectName) {
 
 	// Helpers
 	var booleanQuestion = function (question, callback) {
-		question = cli.prefix + chalk.cyan(' - ' + cli.task) + '  ' + question + ' (y/n)\t';
+		question = cli.prefix + chalk.cyan(' - ' + projectName) + '  ' + question + ' (y/n)\t';
 		readline.question(question, function (answer) {
 			if (answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y') {
 				callback(true);
@@ -32,7 +32,7 @@ module.exports = function (cli, projectName) {
 	};
 
 	var stringQuestion = function (question, callback) {
-		question = cli.prefix + chalk.cyan(' - ' + cli.task) + '  ' + question + ' ';
+		question = cli.prefix + chalk.cyan(' - ' + projectName) + '  ' + question + ' ';
 		readline.question(question, function (answer) {
 			callback(answer);
 		});
@@ -60,11 +60,11 @@ module.exports = function (cli, projectName) {
 		}
 		_.each(dir, function (val, key) {
 			if (typeof val !== 'string') {
-				cli.log('Creating directory: ' + path + val.name);
+				cli.log(projectName, 'Creating directory: ' + path + val.name);
 				fs.mkdirSync(absolutePath + path + val.name);
 				walkDir(val.directories, path + val.name + '/');
 			} else {
-				cli.log('Creating directory: ' + path + val);
+				cli.log(projectName, 'Creating directory: ' + path + val);
 				fs.mkdirSync(absolutePath + path + val);
 				walkDir(null);
 			}
@@ -78,32 +78,67 @@ module.exports = function (cli, projectName) {
 		[
 
 			function (done) {
-				cli.info('Generating package.json...');
+				cli.info('Generate package.json...');
 				var packageJsonContents = {};
 				var index = 0;
+				var suggestion = '';
 				async.whilst(
 					function () {
 						return cli.utils.generators.angular.packageJson.length > index;
 					},
 					function (finishedQ) {
 						var q = cli.utils.generators.angular.packageJson[index];
-						stringQuestion(q + ':', function (answer) {
+						if (q === 'name') {
+							suggestion = '(' + projectName + ')';
+						} else if (q === 'version') {
+							suggestion = '(0.0.0)';
+						} else if (q === 'license') {
+							suggestion = '(ISC)';
+						} else {
+							suggestion = '';
+						}
+						stringQuestion(q + ': ' + suggestion, function (answer) {
 							if (answer === '') {
-								packageJsonContents[q] = '';
+								if (q === 'name') {
+									packageJsonContents[q] = projectName;
+								} else if (q === 'version') {
+									packageJsonContents[q] = '0.0.0';
+								} else if (q === 'test command') {
+									packageJsonContents.scripts = {
+										test: "echo \"Error: no test specified\" && exit 1"
+									};
+								} else if (q === 'license') {
+									packageJsonContents[q] = 'ISC';
+								}
 							} else {
-								packageJsonContents[q] = answer;
+								if (q === 'git repository') {
+									packageJsonContents.repository = {
+										type: 'git',
+										url: answer
+									};
+								} else if (q === 'test command') {
+									packageJsonContents.scripts = {
+										test: answer
+									};
+								} else if (q === 'keywords') {
+									packageJsonContents.keywords = answer.split(',');
+								} else {
+									packageJsonContents[q] = answer;
+								}
 							}
+
 							index++;
 							finishedQ();
 						});
-					}, function (err) {
+					},
+					function (err) {
 
-						var pkg = JSON.stringify(packageJsonContents, null, '\t');
-						console.log('\n' + pkg);
-						booleanQuestion('Is this okay ?', function (okay) {
+						var pkg = JSON.stringify(packageJsonContents, null, '\t ');
+						console.log('\n ' + pkg);
+						booleanQuestion('Is this okay ? ', function (okay) {
 							if (okay) {
 								didNpm = true;
-								fs.writeFile(absolutePath + '/package.json', pkg, function (err) {
+								fs.writeFile(absolutePath + '/package.json ', pkg, function (err) {
 									cli.success('Created package.json.');
 									done();
 								});
@@ -117,8 +152,9 @@ module.exports = function (cli, projectName) {
 				);
 			},
 			function (done) {
-				cli.info('Generating bower.json...');
+				cli.info('Generate bower.json...');
 				var bowerJsonContents = {};
+				bowerJsonContents['private'] = true;
 				var index = 0;
 				async.whilst(
 					function () {
@@ -126,9 +162,24 @@ module.exports = function (cli, projectName) {
 					},
 					function (finishedQ) {
 						var q = cli.utils.generators.angular.bowerJson[index];
-						stringQuestion(q + ':', function (answer) {
+						if (q === 'name') {
+							suggestion = '(' + projectName + ')';
+						} else if (q === 'version') {
+							suggestion = '(0.0.0)';
+						} else if (q === 'license') {
+							suggestion = '(ISC)';
+						} else {
+							suggestion = '';
+						}
+						stringQuestion(q + ': ' + suggestion, function (answer) {
 							if (answer === '') {
-								bowerJsonContents[q] = '';
+								if (q === 'name') {
+									bowerJsonContents[q] = projectName;
+								} else if (q === 'version') {
+									bowerJsonContents[q] = '0.0.0';
+								} else if (q === 'license') {
+									bowerJsonContents[q] = 'ISC';
+								}
 							} else {
 								bowerJsonContents[q] = answer;
 							}
@@ -137,9 +188,9 @@ module.exports = function (cli, projectName) {
 						});
 					}, function (err) {
 
-						var pkg = JSON.stringify(bowerJsonContents, null, '\t');
+						var pkg = JSON.stringify(bowerJsonContents, null, '\t ');
 						console.log(pkg);
-						booleanQuestion('Is this okay ?', function (okay) {
+						booleanQuestion('Is this okay ? ', function (okay) {
 							if (okay) {
 
 								var bowerrc = {
@@ -151,7 +202,7 @@ module.exports = function (cli, projectName) {
 								fs.writeFile(absolutePath + '/bower.json', pkg, function (err) {
 									cli.success('Created bower.json.');
 									fs.writeFile(absolutePath + '/.bowerrc', jsonBowerrc, function (err) {
-										cli.success('Created .bowerrc ...');
+										cli.success('Created.bowerrc...');
 										done();
 									});
 								});
@@ -165,7 +216,7 @@ module.exports = function (cli, projectName) {
 				);
 			},
 			function (done) {
-				cli.info('Setting up directories...\n');
+				cli.info('Setting up directories...\n ');
 
 				var directories = cli.utils.generators.angular.directories;
 
@@ -174,7 +225,7 @@ module.exports = function (cli, projectName) {
 				done();
 			},
 			function (done) {
-				cli.info('Installing dependencies...\n');
+				cli.info('Installing dependencies...\n ');
 				async.series(
 					[
 
@@ -190,7 +241,7 @@ module.exports = function (cli, projectName) {
 									},
 									function (npmDevDone) {
 										var dep = npmDev[index];
-										cli.info('Installing dependency: ' + dep);
+										cli.info('Installing dependency : ' + dep);
 										installDependency(dep, 'npm', true, function () {
 											index++;
 											npmDevDone();
@@ -224,12 +275,6 @@ module.exports = function (cli, projectName) {
 						function (cb) {
 							if (didBower) {
 
-								var bowerrc = {
-									directory: 'public/bower_components'
-								};
-
-								fs.writeFileSync(absolutePath + '/.bowerrc', JSON.stringify(bowerrc, null, '\t'));
-
 								var index = 0;
 								var bower = cli.utils.generators.angular.bower;
 								async.whilst(
@@ -257,71 +302,21 @@ module.exports = function (cli, projectName) {
 						done();
 					}
 				);
+			},
+			function (done) {
+				cli.info('Creating gulpfile.js ...');
+
+				fs.readFile(__dirname + '/../files/gulpfile.js', function (err, data) {
+					fs.writeFile(absolutePath + '/gulpfile.js', data, function (err) {
+						cli.success('gulpfile.js created');
+						done();
+					});
+				});
 			}
 		],
 		function (err, results) {
-			cli.success('Successfully created an angular project, good luck !');
+			cli.success('Finished setting up project');
 			readline.close();
 		}
 	);
-
-
-	// async.series(
-	// 	[	
-	// 		function (scb) {
-	// 			question(chalk.yellow('Setup directories '), function (setup) {
-	// 				if (setup) {
-	// 					_.each(directories, function (val, key) {
-	// 						fs.mkdirSync(dir + '/' + key);
-	// 						if (typeof val === 'array' || val.length > 0) {
-	// 							for (var i in val) {
-	// 								fs.mkdirSync(dir + '/' + key + '/' + val[i]);
-	// 							}
-	// 						}
-	// 					});
-	// 					console.log(chalk.red('Finished setting up directories...'));
-
-	// 					scb();
-	// 				} else {
-	// 					scb();
-	// 				}
-	// 			});
-	// 		},
-	// 		function (scb) {
-	// 			async.whilst(
-	// 				function () { return index < dependencies.length},
-	// 				function (callback) {
-	// 					question(chalk.yellow('Install ' + dependencies[index] + ' ?'), function (install) {
-	// 						if (install) {
-	// 							if (fs.existsSync(dir + '/public')) {
-	// 								executeCommand('cd ' + dir + '/public' + ' && bower install ' + dependencies[index], function (err, stdout) {
-	// 									console.log(stdout);
-	// 									index++;
-	// 									callback();
-	// 								});
-	// 							} else {
-	// 								executeCommand('cd ' + dir + ' && bower install ' + dependencies[index], function (err, stdout) {
-	// 									console.log(stdout);
-	// 									index++;
-	// 									callback();
-	// 								});
-	// 							}
-
-	// 						} else {
-	// 							index++;
-	// 							callback();
-	// 						}
-	// 					});
-	// 				},
-	// 				function (err) {
-	// 					console.log(chalk.red('Finished building project'));
-	// 					scb();
-	// 				}
-	// 			);
-	// 		}
-	// 	],
-	// 	function (err, results) {
-	// 		readline.close();
-	// 	}
-	// );
 };

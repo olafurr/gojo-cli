@@ -12,13 +12,6 @@ var _ = require('underscore');
 // Let's change the name to something fancy
 pkg.name = 'GoJo';
 
-
-// Prompt welcome message
-
-console.log(chalk.green('\n\n\n' + pkg.name + ' - CLI\n'));
-console.log(chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.version) + '\n\n');
-
-
 var cli = {
 	pkg: pkg,
 	utils: utils,
@@ -49,9 +42,8 @@ if (args.length > 1) {
 	}
 } else {
 	console.log(cli.prefix + ': ' + chalk.green(pkg.name + ' - CLI'));
-	console.log(cli.prefix + ': ' + chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.version));
-	console.log('\n');
+	console.log(cli.prefix + ': ' + chalk.green(pkg.name + ' v' + pkg.version + ' - node ' + process.version + '\n'));
 	console.log(cli.prefix + ': ' + chalk.cyan.underline.blue('Commands\n'));
-	console.log(cli.prefix + ': ' + chalk.cyan('Generate webapp'));
+	console.log(cli.prefix + ': ' + chalk.yellow('Generate webapp'));
 	console.log(cli.prefix + ': gojo init <project name>\n');
 }

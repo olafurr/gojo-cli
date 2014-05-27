@@ -94,9 +94,6 @@ gulp.task('build', ['clean-build'], function () {
 	gulp.start('compress');
 });
 
-gulp.task('clean-build', [
-	'styles',
-	'scripts',
-	'bower',
-	'images'
-]);
+gulp.task('clean-build', ['clean'], function () {
+	gulp.start('styles', 'scripts', 'bower', 'images');
+});
