@@ -38,6 +38,7 @@ module.exports = function (cli, projectName) {
 		});
 	};
 
+
 	function installDependency(dependency, packageManager, dev, cb) {
 		var shell = 'cd ' + absolutePath + ' && ' + packageManager + ' install ' + dependency + ' --save';
 		if (dev) {
@@ -222,6 +223,13 @@ module.exports = function (cli, projectName) {
 						},
 						function (cb) {
 							if (didBower) {
+
+								var bowerrc = {
+									directory: 'public/bower_components'
+								};
+
+								fs.writeFileSync(absolutePath + '/.bowerrc', JSON.stringify(bowerrc, null, '\t'));
+
 								var index = 0;
 								var bower = cli.utils.generators.angular.bower;
 								async.whilst(
@@ -232,6 +240,7 @@ module.exports = function (cli, projectName) {
 										var dep = bower[index];
 										cli.info('Installing dependency: ' + dep);
 										installDependency(dep, 'bower', false, function () {
+											info('Installing dependency: ' + dep);
 											index++;
 											bowerDone();
 										});
@@ -244,7 +253,8 @@ module.exports = function (cli, projectName) {
 								cb();
 							}
 						}
-					], function (err, results) {
+					],
+					function (err, results) {
 						done();
 					}
 				);
