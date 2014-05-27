@@ -6,10 +6,12 @@
 ## Getting Started
 ```javascript
 npm install gojo -g
+```
 
 ## Usage
 ```javascript
 gojo init <project_name>
+```
 
 GoJo is handy if you just need a basic startup for a project.
 
