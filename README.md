@@ -1,5 +1,5 @@
 # GoJo - CLI
-=======
+
 > Webapp generator
 
 

@@ -1,7 +1,7 @@
 {
   "name": "gojo",
   "version": "0.1.0",
-  "description": "Command line tool",
+  "description": "Simple webapp generator",
   "bin": {
     "gojo": "./gojo.js"
   },
@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "git repository": "https://github.com/olafurr/com-cli.git",
+  "git repository": "https://github.com/olafurr/gojo-cli.git",
   "author": "Ólafur Ragnar Garðarsson",
   "license": "ISC",
   "devDependencies": {},
