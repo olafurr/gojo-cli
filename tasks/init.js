@@ -138,7 +138,7 @@ module.exports = function (cli, projectName) {
 						booleanQuestion('Is this okay ? ', function (okay) {
 							if (okay) {
 								didNpm = true;
-								fs.writeFile(absolutePath + '/package.json ', pkg, function (err) {
+								fs.writeFile(absolutePath + '/package.json', pkg, function (err) {
 									cli.success('Created package.json.');
 									done();
 								});

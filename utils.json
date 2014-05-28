@@ -27,6 +27,7 @@
 				"gulp-flatten",
 				"gulp-gzip",
 				"gulp-clean",
+				"gulp-cache",
 				"jshint-stylish",
 				"event-stream"
 			],

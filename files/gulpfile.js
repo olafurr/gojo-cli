@@ -11,7 +11,7 @@ var stylish = require('jshint-stylish');
 
 var glob = {
 	src: {
-		scripts: ['/public/scripts/**/*.js', '/public/scripts/*.js'],
+		scripts: ['public/scripts/**/*.js', 'public/scripts/*.js'],
 		styles: 'public/styles/*.less',
 		img: ['public/images/*.png', 'public/images/*.jpg', 'public/images/*.gif'],
 
@@ -22,7 +22,7 @@ var glob = {
 		img: 'public_build/images'
 	},
 	bower: {
-		scripts: 'public/bower_components/**/*.js',
+		scripts: 'public/bower_components/**/*.min.js',
 		styles: 'public/bower_components/**/*.css'
 	}
 };
@@ -32,17 +32,16 @@ gulp.task('scripts', function () {
 	return gulp.src(glob.src.scripts)
 		.pipe($.jshint())
 		.pipe($.jshint.reporter(stylish))
+		.pipe($.uglify())
 		.pipe($.rename({
 			suffix: '.min'
 		}))
-		.pipe($.uglify())
 		.pipe(gulp.dest(glob.dist.scripts));
 });
 
 gulp.task('bower', function () {
-	gulp.src(glob.src.bower.scripts)
+	return gulp.src(glob.bower.scripts)
 		.pipe($.flatten())
-		.pipe($.uglify())
 		.pipe($.concat('vendor.min.js'))
 		.pipe(gulp.dest(glob.dist.scripts));
 });
@@ -59,13 +58,12 @@ gulp.task('styles', function () {
 
 gulp.task('images', function () {
 	return gulp.src(glob.src.img)
-		.pipe($.cache())
 		.pipe($.imagemin({
 			interlaced: true,
 			progressive: true,
 			optimizationLevel: 7
 		}))
-		.pipe(gulp.dest(gulp.dist.img));
+		.pipe(gulp.dest(glob.dist.img));
 });
 
 gulp.task('compress', function () {
